@@ -196,6 +196,71 @@ print("Means:", means)
 print("Variances:", variances)
 print("Weights:", weights)
 
+candidate elimination
+
+import csv
+
+def more_general(h1, h2):
+    return all(x == '?' or x == y for x, y in zip(h1, h2))
+
+def consistent(hypothesis, example):
+    return all(h == '?' or h == e for h, e in zip(hypothesis, example))
+
+def candidate_elimination(examples):
+    attributes = len(examples[0]) - 1
+    S = ['Ø'] * attributes
+    G = [['?'] * attributes]
+
+    for example in examples:
+        inputs, output = example[:-1], example[-1]
+
+        if output == 'Yes':
+            G = [g for g in G if consistent(g, inputs)]
+
+            for i in range(attributes):
+                if S[i] == 'Ø':
+                    S[i] = inputs[i]
+                elif S[i] != inputs[i]:
+                    S[i] = '?'
+        else: 
+            new_G = []
+            for g in G:
+                if consistent(g, inputs):
+                    for i in range(attributes):
+                        if g[i] == '?':
+                            for value in set(e[i] for e in examples if e[-1] == 'Yes'):
+                                if value != inputs[i]:
+                                    new_h = g.copy()
+                                    new_h[i] = value
+                                    if more_general(new_h, S):
+                                        new_G.append(new_h)
+                else:
+                    new_G.append(g)
+            G = new_G
+
+    final_G = []
+    for g in G:
+        if not any(more_general(other, g) and other != g for other in G):
+            final_G.append(g)
+
+    return S, final_G
+
+examples = [
+    ['Big', 'Red', 'Circle', 'No'],
+    ['Small', 'Red', 'Triangle', 'No'],
+    ['Big', 'Red', 'Circle', 'Yes'],
+    ['Small', 'Red', 'Circle', 'No'],
+    ['Small', 'Blue', 'Circle', 'Yes'],
+]
+
+S, G = candidate_elimination(examples)
+
+print("Final Specific Hypothesis (S):", S)
+print("Final General Hypotheses (G):")
+for g in G:
+    print(g)
+
+
 
 
 

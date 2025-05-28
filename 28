@@ -1,3 +1,29 @@
+S-ALGORIYHM
+
+
+data = [
+    ['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same', 'Yes'],
+    ['Sunny', 'Warm', 'High', 'Strong', 'Warm', 'Same', 'Yes'],
+    ['Rainy', 'Cold', 'High', 'Strong', 'Warm', 'Change', 'No'],
+    ['Sunny', 'Warm', 'High', 'Strong', 'Cool', 'Change', 'Yes']
+]
+
+num_attributes = len(data[0]) - 1
+
+hypothesis = ['ϕ'] * num_attributes
+
+for instance in data:
+    if instance[-1] == 'Yes':  
+        for i in range(num_attributes):
+            if hypothesis[i] == 'ϕ':
+                hypothesis[i] = instance[i]
+            elif hypothesis[i] != instance[i]:
+                hypothesis[i] = '?'
+
+print("The most specific hypothesis is:", hypothesis)
+
+
+
 1)linear regression
 
 import numpy as np

@@ -373,6 +373,49 @@ print(f"\nPredicted price for the sample house: ${predicted_price[0]:,.2f}")
 
 
 
+1Q b)
+
+import time
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+models = {
+    "Decision Tree": DecisionTreeClassifier(),
+    "Logistic Regression": LogisticRegression(max_iter=200),
+    "K-Nearest Neighbors": KNeighborsClassifier()
+}
+
+results = []
+
+for name, model in models.items():
+    start_train = time.time()
+    model.fit(X_train, y_train)
+    train_time = time.time() - start_train
+
+    start_pred = time.time()
+    y_pred = model.predict(X_test)
+    pred_time = time.time() - start_pred
+
+    accuracy = accuracy_score(y_test, y_pred)
+    total_time = train_time + pred_time
+
+    results.append((name, accuracy, round(train_time, 4), round(pred_time, 4), round(total_time, 4)))
+
+results_df = pd.DataFrame(results, columns=["Model", "Accuracy", "Train Time (s)", "Predict Time (s)", "Total Time (s)"])
+print("\nComparison of Classifiers on Iris Dataset:")
+print(results_df.sort_values(by="Accuracy", ascending=False))
+
 
 
 

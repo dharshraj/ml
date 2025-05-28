@@ -294,6 +294,85 @@ print(f"Model Accuracy: {accuracy:.2f}")
 
 
 
+1Q)
+
+# Import required libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# a) Read the house dataset
+data = pd.read_csv('house_data.csv')  # <-- Replace with your CSV file
+
+# b) Print the first five rows
+print("First five rows of the dataset:")
+print(data.head())
+
+# c) Perform basic statistical computations
+print("\nBasic statistics of the dataset:")
+print(data.describe())
+
+# Show distribution of the target column (price)
+plt.figure(figsize=(8, 5))
+sns.histplot(data['price'], kde=True)
+plt.title('Distribution of House Prices')
+plt.xlabel('Price')
+plt.ylabel('Frequency')
+plt.show()
+
+# d) Print columns and data types
+print("\nColumns and data types:")
+print(data.dtypes)
+
+# e) Detect and handle null values using mode
+print("\nNull values before handling:")
+print(data.isnull().sum())
+
+for col in data.columns:
+    if data[col].isnull().sum() > 0:
+        data[col].fillna(data[col].mode()[0], inplace=True)
+
+print("\nNull values after handling:")
+print(data.isnull().sum())
+
+# f) Explore the dataset using a heatmap
+plt.figure(figsize=(12, 8))
+sns.heatmap(data.corr(), annot=True, cmap='coolwarm')
+plt.title("Correlation Heatmap")
+plt.show()
+
+# g) Split the data into training and testing sets
+# Separate target and features
+X = data.drop(['price'], axis=1)
+y = data['price']
+
+# One-hot encode categorical features if any
+X = pd.get_dummies(X)
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# h) Predict the price of a house using Linear Regression
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict and evaluate
+y_pred = model.predict(X_test)
+print("\nModel Evaluation:")
+print(f"Mean Squared Error: {mean_squared_error(y_test, y_pred):,.2f}")
+print(f"R^2 Score: {r2_score(y_test, y_pred):.2f}")
+
+# Predict for one sample house (first in test set)
+sample_house = X_test.iloc[0].values.reshape(1, -1)
+predicted_price = model.predict(sample_house)
+print(f"\nPredicted price for the sample house: ${predicted_price[0]:,.2f}")
+
+
+
 
 
 
